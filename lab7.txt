@@ -1,0 +1,104 @@
+# ================================
+# Ansible Installation
+# ================================
+
+sudo apt update && sudo apt install -y ansible && ansible --version
+
+# Test Ansible
+ansible localhost -m ping
+
+
+# ================================
+# Configure SSH Access to Node Machine
+# ================================
+
+# Run on Master Machine
+ssh-keygen
+
+# Copy public key and run on Node Machine
+echo "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINe5kpziiy0nsgpa0RcY26KmIYYEL/1ehNSbmb1t+tSZ ubuntu@ip-172-31-22-41" >> ~/.ssh/authorized_keys
+
+
+# ================================
+# Create Inventory File (Run on Master Machine)
+# ================================
+
+nano ~/inventory.ini
+
+
+# Add Below Content
+
+[node_machines]
+3.89.225.137 ansible_ssh_user=ubuntu
+
+
+# Save File
+CTRL + O → Enter → CTRL + X
+
+
+# ================================
+# Create Playbook File
+# ================================
+
+nano ~/install_package.yml
+
+
+# Add Below YAML Content
+
+---
+- name: Install a package on the node machine
+  hosts: node_machines
+  become: yes
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+
+
+# Save File
+CTRL + O → Enter → CTRL + X
+
+
+# ================================
+# Run Playbook
+# ================================
+
+ansible-playbook -i ~/inventory.ini ~/install_package.yml
+
+
+# ================================
+# Login to Node Machine
+# ================================
+
+ssh ubuntu@node-ip
+
+
+# ================================
+# Check Nginx Status
+# ================================
+
+systemctl status nginx
+
+
+# ================================
+# AWS Security Group
+# ================================
+
+Allow HTTP Port 80 from Anywhere IPv4 (0.0.0.0/0)
+
+
+# ================================
+# Open in Browser
+# ================================
+
+http://node-ip
+
+
+# Output
+Welcome to nginx!
