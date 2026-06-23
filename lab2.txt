@@ -1,0 +1,22 @@
+sudo yum update -y
+
+sudo yum install java-17-amazon-corretto -y
+
+java -version
+
+sudo yum install maven -y 
+
+mvn -version
+
+mvn archetype:generate - {Enter values when asked. (write 2309, 9, …),Then type: Y}
+
+ls
+cd artifact1
+ls
+cat pom.xml
+
+mvn clean install 
+
+ls
+cd target
+ls
